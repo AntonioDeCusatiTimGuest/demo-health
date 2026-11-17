@@ -1,0 +1,57 @@
+services:
+
+  api_gateway:
+    image: apigw:0.0.1
+    restart: always
+    environment:
+      JWT_SECRET: hzxnOLkvo0sRipHSHRH4VZSDh5pfTM9PLMjRBbwl_NzD1UOEEnEuruKEHE5LlopCkPL7iHEPUBLWC22JrOwL0A
+    ports:
+      - 8090:8000
+
+
+  hospital_building:
+    image:  hospital_building:0.0.1
+    # depends_on:
+    #   - mongodb
+    ports:
+      - 8083:8000
+    volumes:
+      - data_json:/data
+    environment:
+      LOG_LEVEL: DEBUG
+      MONGO_DB: building
+    restart: always
+
+  mongodb:
+    image: mongo:4.4
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-volume:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: health
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: S3cure.Passw0rd
+      command: mongod --quiet --logpath /dev/null
+      # command: mongod --quiet
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    depends_on:
+      - mongodb
+    ports:
+      - 8089:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: S3cure.Passw0rd
+      ME_CONFIG_BASICAUTH_USERNAME: space
+      ME_CONFIG_BASICAUTH_PASSWORD: proximacentauri
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+
+
+volumes:
+  mongodb-volume:

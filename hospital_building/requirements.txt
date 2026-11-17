@@ -1,0 +1,6 @@
+Flask
+gunicorn
+pymongo
+py-bcrypt
+pyjwt
+requests
